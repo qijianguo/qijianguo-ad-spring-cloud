@@ -1,0 +1,27 @@
+server:
+  port: 7000
+  servlet:
+    context-path: /ad-sponsor # 请求的前缀
+spring:
+  application:
+    name: eureka-client-ad-sponsor
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+        hibernate.format_sql: true
+    open-in-view: false  # 懒加载
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/imooc_ad_data?autoReconnect=true # 数据库地址、端口号、DB 需要根据你的配置去填写
+    username: **** # 需要填写你的数据库用户名
+    password: **** # 需要填写你的数据库密码
+    tomcat:
+      max-active: 4
+      min-idle: 2
+      initial-size: 2
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8000/eureka/
