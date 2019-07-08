@@ -13,18 +13,24 @@ import com.qijianguo.ad.vo.AdPlanGetRequest;
 import com.qijianguo.ad.vo.AdPlanRequest;
 import com.qijianguo.ad.vo.AdPlanResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class AdPlanServiceImpl implements IAdPlanService {
 
+    private final AdPlanRepository adPlanRepository;
+    private final AdUserRepository adUserRepository;
+
     @Autowired
-    private AdPlanRepository adPlanRepository;
-    @Autowired
-    private AdUserRepository adUserRepository;
+    public AdPlanServiceImpl(AdPlanRepository adPlanRepository, AdUserRepository adUserRepository) {
+        this.adPlanRepository = adPlanRepository;
+        this.adUserRepository = adUserRepository;
+    }
 
     @Override
     @Transactional
@@ -52,7 +58,7 @@ public class AdPlanServiceImpl implements IAdPlanService {
     }
 
     @Override
-    public List<AdPlan> getAdplanByIds(AdPlanGetRequest request) throws AdException {
+    public List<AdPlan> getAdPlanByIds(AdPlanGetRequest request) throws AdException {
         if (!request.validate()) {
             throw new AdException(Contants.ErrorMsg.REQUEST_PARAM_ERROR);
         }

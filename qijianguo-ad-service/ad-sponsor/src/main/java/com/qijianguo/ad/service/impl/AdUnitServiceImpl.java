@@ -3,39 +3,54 @@ package com.qijianguo.ad.service.impl;
 import com.qijianguo.ad.constant.Contants;
 import com.qijianguo.ad.dao.AdPlanRepository;
 import com.qijianguo.ad.dao.AdUnitRepository;
+import com.qijianguo.ad.dao.CreativeRepository;
 import com.qijianguo.ad.dao.unit_condition.AdUnitDistrictRepository;
 import com.qijianguo.ad.dao.unit_condition.AdUnitItRepository;
 import com.qijianguo.ad.dao.unit_condition.AdUnitKeywordRepository;
+import com.qijianguo.ad.dao.unit_condition.CreativeUnitRepository;
 import com.qijianguo.ad.entity.AdPlan;
 import com.qijianguo.ad.entity.AdUnit;
 import com.qijianguo.ad.entity.unit_condition.AdUnitDistrict;
 import com.qijianguo.ad.entity.unit_condition.AdUnitIt;
 import com.qijianguo.ad.entity.unit_condition.AdUnitKeyword;
+import com.qijianguo.ad.entity.unit_condition.CreativeUnit;
 import com.qijianguo.ad.exception.AdException;
 import com.qijianguo.ad.service.IAdUnitService;
 import com.qijianguo.ad.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class AdUnitServiceImpl implements IAdUnitService{
 
-    @Autowired
-    private AdPlanRepository adPlanRepository;
+    private final AdPlanRepository adPlanRepository;
+
+    private final AdUnitRepository adUnitRepository;
+
+    private final AdUnitKeywordRepository adUnitKeywordRepository;
+
+    private final AdUnitItRepository adUnitItRepository;
+
+    private final AdUnitDistrictRepository adUnitDistrictRepository;
+
+    private final CreativeRepository creativeRepository;
+
+    private final CreativeUnitRepository creativeUnitRepository;
 
     @Autowired
-    private AdUnitRepository adUnitRepository;
-
-    @Autowired
-    private AdUnitKeywordRepository adUnitKeywordRepository;
-
-    @Autowired
-    private AdUnitItRepository adUnitItRepository;
-
-    @Autowired
-    private AdUnitDistrictRepository adUnitDistrictRepository;
+    public AdUnitServiceImpl(AdPlanRepository adPlanRepository, AdUnitRepository adUnitRepository, AdUnitKeywordRepository adUnitKeywordRepository, AdUnitItRepository adUnitItRepository, AdUnitDistrictRepository adUnitDistrictRepository, CreativeRepository creativeRepository, CreativeUnitRepository creativeUnitRepository) {
+        this.adPlanRepository = adPlanRepository;
+        this.adUnitRepository = adUnitRepository;
+        this.adUnitKeywordRepository = adUnitKeywordRepository;
+        this.adUnitItRepository = adUnitItRepository;
+        this.adUnitDistrictRepository = adUnitDistrictRepository;
+        this.creativeRepository = creativeRepository;
+        this.creativeUnitRepository = creativeUnitRepository;
+    }
 
     @Override
     public AdUnitResponse createUnit(AdUnitRequest request) throws AdException {
@@ -100,7 +115,37 @@ public class AdUnitServiceImpl implements IAdUnitService{
         return new AdUnitDistrictResponse(ids);
     }
 
+    @Override
+    public CreativeUnitResponse createCreativeUnit(CreativeUnitRequest request) throws AdException {
+
+        // 校验unit是否存在
+        List<Long> unitIds = request.getCreativeUnitItems().stream()
+                .map(CreativeUnitRequest.CreativeUnitItem :: getUnitId)
+                .collect(Collectors.toList());
+        if (isRelatedUnitExist(unitIds)) {
+            throw new AdException(Contants.ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+
+        // 校验creative是否存在
+        List<Long> creativeIds = request.getCreativeUnitItems().stream()
+                .map(CreativeUnitRequest.CreativeUnitItem :: getCreativeId)
+                .collect(Collectors.toList());
+        if (isRelatedCreativeExist(creativeIds)) {
+            throw new AdException(Contants.ErrorMsg.REQUEST_PARAM_ERROR);
+        }
+
+        List<CreativeUnit> creativeUnits = Collections.emptyList();
+        request.getCreativeUnitItems().forEach(item -> creativeUnits.add(new CreativeUnit(item.getCreativeId(), item.getUnitId())));
+        List<Long> ids = creativeUnitRepository.saveAll(creativeUnits).stream().map(CreativeUnit::getId).collect(Collectors.toList());
+
+        return new CreativeUnitResponse(ids);
+    }
+
     private boolean isRelatedUnitExist(List<Long> unitIds) {
         return CollectionUtils.isEmpty(unitIds) || adUnitRepository.findAllById(unitIds).size() != new HashSet<>(unitIds).size();
+    }
+
+    private boolean isRelatedCreativeExist(List<Long> unitIds) {
+        return CollectionUtils.isEmpty(unitIds) || creativeRepository.findAllById(unitIds).size() != new HashSet<>(unitIds).size();
     }
 }

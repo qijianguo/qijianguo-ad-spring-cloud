@@ -12,7 +12,7 @@ public interface IAdPlanService {
 
     AdPlanResponse createAdPlan(AdPlanRequest request) throws AdException;
 
-    List<AdPlan> getAdplanByIds(AdPlanGetRequest request) throws AdException;
+    List<AdPlan> getAdPlanByIds(AdPlanGetRequest request) throws AdException;
 
     AdPlanResponse updateAdPlan(AdPlanRequest request) throws AdException;
 

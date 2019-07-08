@@ -10,10 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <version>1.0-SNAPSHOT</version>
-    <artifactId>ad-gateway</artifactId>
+    <artifactId>ebook-gateway</artifactId>
 
-    <!-- 模块名及描述信息 --><name>ad-gateway</name>
-    <description>ad-gateway</description>
+    <!-- 模块名及描述信息 --><name>ebook-gateway</name>
+    <description>ebook-gateway</description>
     <packaging>jar</packaging>
 
     <dependencies>

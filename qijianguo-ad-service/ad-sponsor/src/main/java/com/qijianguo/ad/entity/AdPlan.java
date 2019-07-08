@@ -32,7 +32,7 @@ public class AdPlan {
     private String planName;
 
     @Basic
-    @Column(name = "plan_name", nullable = false)
+    @Column(name = "plan_status", nullable = false)
     private Integer planStatus;
 
     @Basic

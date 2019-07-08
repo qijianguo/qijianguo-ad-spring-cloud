@@ -10,7 +10,7 @@
 
     <modules>
         <module>ad-eureka</module>
-        <module>ad-gateway</module>
+        <module>ebook-gateway</module>
         <module>qijianguo-ad-service</module>
     </modules>
 
@@ -47,6 +47,18 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 接口文档 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
     </dependencies>
 
     <!-- spring-cloud版本管理，会使用到properties中的定义 -->
@@ -64,9 +76,19 @@
     </dependencyManagement>
 
     <!-- 配置仓库 -->
-    <repositories>
+    <!--<repositories>
         <repository>
             <type>spring-milestones</type>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>-->
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/milestone</url>
             <snapshots>

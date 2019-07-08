@@ -2,8 +2,31 @@ server:
   port: 9000
 spring:
   application:
-    name: ad-gateway
+    name: ebook-gateway
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8000/eureka/
+#zuul:
+#  prefix: /qijianguo
+#  routes:
+#    sponsor:
+#      path: /ad-sponsor/**
+#      serviceId: eureka-client-ad-sponsor
+#      strip-prefix: false
+      # 127.0.0.1:9000/qijianguo/ad-sponsor/create/user
+zuul:
+  prefix: /qijianguo
+  routes:
+    ad-sponsor:
+      path: /ad-sponsor/**
+      strip-prefix: false
+
+# 解决 com.netflix.zuul.exception.ZuulException: Forwarding error
+ribbon:
+  eureka:
+    enable: true
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+
+

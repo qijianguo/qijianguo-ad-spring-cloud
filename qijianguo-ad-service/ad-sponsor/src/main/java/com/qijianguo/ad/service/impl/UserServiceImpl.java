@@ -9,13 +9,19 @@ import com.qijianguo.ad.util.CommonUtils;
 import com.qijianguo.ad.vo.CreateUserRequest;
 import com.qijianguo.ad.vo.CreateUserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+@Service
 public class UserServiceImpl implements IUserService {
 
+    private final AdUserRepository adUserRepository;
+
     @Autowired
-    private AdUserRepository adUserRepository;
+    public UserServiceImpl(AdUserRepository adUserRepository) {
+        this.adUserRepository = adUserRepository;
+    }
 
     @Override
     @Transactional
@@ -34,14 +40,12 @@ public class UserServiceImpl implements IUserService {
 
         AdUser adUser = adUserRepository.save(new AdUser(request.getName(), token));
 
-        CreateUserResponse response = new CreateUserResponse(
+        return new CreateUserResponse(
                 adUser.getId(),
                 adUser.getUsername(),
                 token,
                 adUser.getCreateTime(),
                 adUser.getUpdateTime()
         );
-
-        return response;
     }
 }
